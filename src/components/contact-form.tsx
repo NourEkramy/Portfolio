@@ -54,11 +54,30 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
 
       {state.status === "error" && (
         <p role="alert" className="mt-5 border border-oxblood bg-oxblood/8 px-4 py-3 text-sm text-oxblood">
-          {state.message}{" "}
-          <a href={`mailto:${fallbackEmail}`} className="link-underline font-mono">
-            {fallbackEmail}
-          </a>
+          {state.message}
         </p>
+      )}
+
+      {/*
+        The form could not store the message. Rather than a dead end, hand over
+        a mailto already carrying everything that was typed.
+      */}
+      {state.status === "unavailable" && state.mailto && (
+        <div role="alert" className="mt-5 border border-oxblood bg-oxblood/8 p-4">
+          <p className="text-sm text-oxblood">{state.message}</p>
+          <p className="mt-2 text-sm text-ink-2">
+            Nothing you wrote is lost — this opens your email app with it ready to send.
+          </p>
+          <a href={state.mailto} className="btn btn-primary mt-4">
+            Send it by email instead
+          </a>
+          <p className="mt-3 font-mono text-[0.7rem] text-ink-3">
+            Or copy the address:{" "}
+            <a href={`mailto:${fallbackEmail}`} className="link-underline text-oxblood">
+              {fallbackEmail}
+            </a>
+          </p>
+        </div>
       )}
 
       <div className="mt-7 flex flex-wrap items-center gap-4">
