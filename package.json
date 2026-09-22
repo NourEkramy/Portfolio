@@ -13,7 +13,8 @@
     "upload:media": "node scripts/upload-media.mjs",
     "db:check": "node scripts/check-supabase.mjs",
     "db:setup": "node scripts/run-sql.mjs supabase/schema.sql supabase/seed.sql",
-    "db:sql": "node scripts/run-sql.mjs"
+    "db:sql": "node scripts/run-sql.mjs",
+    "db:rls": "node scripts/rls-probe.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
