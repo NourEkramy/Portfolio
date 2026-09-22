@@ -12,7 +12,7 @@ Home       hero, ledger of numbers, three featured projects, approach, contact
 Projects   every project as a card
 Project    overview, demo video, architecture, features, decisions, stack, screens
 CV         the full CV rendered on the page, plus the PDF to download
-Contact    direct details and a form that writes into the dashboard inbox
+Contact    direct details and a form that emails the enquiry to the inbox
 Dashboard  private — edit projects, profile and read messages
 ```
 
@@ -49,6 +49,7 @@ dashboard needs a database.
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Project API keys → `anon` / `public` |
    | `SUPABASE_SERVICE_ROLE_KEY` | Project API keys → `service_role` — **server only** |
    | `DATABASE_URL` | Settings → Database → Connection string → URI — optional, for `npm run db:setup` |
+   | `RESEND_API_KEY` | resend.com → API Keys — for contact-form email |
 
 3. Create the tables, policies, storage bucket and content. Either paste
    **`supabase/schema.sql`** then **`supabase/seed.sql`** into the SQL editor,
@@ -74,6 +75,24 @@ dashboard needs a database.
 
 6. Restart `npm run dev`. The site now reads from the database, and
    `/dashboard` works.
+
+### Contact email
+
+The contact form sends through [Resend](https://resend.com) — free, 3000 emails
+a month, one API key:
+
+1. Sign up with the address the enquiries should land in.
+2. Create an API key and put it in `.env.local` as `RESEND_API_KEY`.
+
+Resend's shared sender, `onboarding@resend.dev`, needs no domain verification
+but will only deliver to the address the account was created with — which is
+exactly what this form wants. To send from your own domain later, verify it in
+Resend and set `MAIL_FROM`.
+
+Each enquiry arrives with the sender's address as `Reply-To`, so replying from
+the mail client answers them directly. If the send fails, a copy is written to
+the `messages` table and the visitor is handed a pre-filled `mailto`, so nothing
+is lost either way.
 
 ### How the fallback behaves
 

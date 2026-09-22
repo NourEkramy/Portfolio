@@ -17,14 +17,20 @@ export default async function MessagesPage() {
     <div>
       <div className="mb-7">
         <h2 className="display-md text-ink">Messages</h2>
-        <p className="mt-1 text-sm text-ink-3">
+        <p className="mt-1 max-w-xl text-sm text-ink-3">
+          Contact messages are emailed straight to your inbox. Anything listed here is one the email
+          send could not deliver, kept so it is not lost.
+        </p>
+        <p className="mt-2 text-sm text-ink-3">
           {messages.length} total{unread > 0 && ` · ${unread} unread`}
         </p>
       </div>
 
       {messages.length === 0 ? (
         <div className="plate p-8 text-center">
-          <p className="text-ink-2">No messages yet.</p>
+          <p className="text-ink-2">
+            Nothing here — every message so far was delivered by email.
+          </p>
         </div>
       ) : (
         <ul className="space-y-4">

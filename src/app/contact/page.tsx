@@ -29,8 +29,8 @@ export default async function ContactPage() {
         <h1 className="display-xl mt-6 text-ink">Contact</h1>
         <div className="rule-double my-8 max-w-md" />
         <p className="max-w-2xl text-lg leading-relaxed text-ink-2">
-          Open to Flutter roles and freelance work. Email is fastest, but the form below reaches the
-          same inbox.
+          Open to Flutter roles and freelance work. The form below sends straight to my inbox, and
+          I reply to every message.
         </p>
       </div>
 

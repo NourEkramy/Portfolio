@@ -1,13 +1,14 @@
 "use server";
 
 import { profile } from "@/content/profile";
+import { sendEnquiry } from "@/lib/email";
 import { createClient } from "@/lib/supabase/server";
 
 export type ContactState = {
   status: "idle" | "success" | "error" | "unavailable";
   message: string;
   /**
-   * Set when the message could not be stored. The form turns this into a
+   * Set when the message could not be delivered. The form turns this into a
    * one-click "open in your email app" button so the visitor never has to
    * retype what they wrote.
    */
@@ -16,18 +17,17 @@ export type ContactState = {
 
 /** Pre-addressed mailto carrying whatever the visitor already typed. */
 function composeMailto(name: string, email: string, subject: string, message: string) {
-  const body = [message, "", "—", name, email].filter((line) => line !== undefined).join("\n");
   const params = new URLSearchParams({
     subject: subject || `Portfolio enquiry from ${name}`,
-    body,
+    body: [message, "", "—", name, email].join("\n"),
   });
   return `mailto:${profile.email}?${params.toString()}`;
 }
 
 /**
- * Stores a contact message in Supabase. If the table is not there yet, or
- * Supabase is not configured at all, the visitor is handed a pre-filled mailto
- * rather than a dead end.
+ * Delivers a contact message to the inbox by email. A copy is kept in Supabase
+ * only when the email fails, so nothing is silently lost; in the normal case
+ * the message lands in the mailbox and nowhere else.
  */
 export async function submitMessage(
   _previous: ContactState,
@@ -54,34 +54,31 @@ export async function submitMessage(
     return { status: "error", message: "That message is too long — 5000 characters maximum." };
   }
 
-  const mailto = composeMailto(name, email, subject, message);
+  const sent = await sendEnquiry({ to: profile.email, name, email, subject, message });
 
+  if (sent.ok) {
+    return {
+      status: "success",
+      message: "Thank you — your message is on its way to my inbox. I will reply soon.",
+    };
+  }
+
+  // Email did not go out. Keep a copy if the database is reachable, so the
+  // enquiry still exists somewhere, and hand the visitor a mailto either way.
   const supabase = await createClient();
-  if (!supabase) {
-    return {
-      status: "unavailable",
-      message: "The message store is not connected yet, so this form cannot deliver it.",
-      mailto,
-    };
+  if (supabase) {
+    await supabase
+      .from("messages")
+      .insert({ name, email, subject: subject || null, message })
+      .then(() => undefined, () => undefined);
   }
 
-  const { error } = await supabase
-    .from("messages")
-    .insert({ name, email, subject: subject || null, message });
-
-  if (error) {
-    // PGRST205 is "table not in the schema cache", i.e. the schema has not been
-    // applied. Anything else is a genuine failure, but either way the visitor
-    // gets the same escape hatch.
-    const notSetUp = error.code === "PGRST205";
-    return {
-      status: "unavailable",
-      message: notSetUp
-        ? "The message store is not connected yet, so this form cannot deliver it."
+  return {
+    status: "unavailable",
+    message:
+      sent.error === "not-configured"
+        ? "Email delivery is not switched on yet, so this form cannot send it for you."
         : "That could not be sent, and I would rather not lose what you wrote.",
-      mailto,
-    };
-  }
-
-  return { status: "success", message: "Thank you — your message has been sent. I will reply soon." };
+    mailto: composeMailto(name, email, subject, message),
+  };
 }
