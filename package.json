@@ -1,0 +1,37 @@
+{
+  "name": "noureldin-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of NourEldin Ekramy Saad \u2014 Flutter App Developer",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "media": "node scripts/prepare-media.mjs",
+    "seed:sql": "node --experimental-strip-types --no-warnings scripts/generate-seed.mjs",
+    "upload:media": "node scripts/upload-media.mjs",
+    "db:check": "node scripts/check-supabase.mjs",
+    "db:setup": "node scripts/run-sql.mjs supabase/schema.sql supabase/seed.sql",
+    "db:sql": "node scripts/run-sql.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.47.10",
+    "next": "15.1.6",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.6",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "ffmpeg-static": "^5.3.0",
+    "pg": "^8.23.0",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.3"
+  }
+}

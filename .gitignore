@@ -1,0 +1,37 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env files
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# Demo videos are served from Supabase Storage in production, but the
+# transcoded copies are only ~9.6 MB in total, so they stay committed as a
+# fallback - the site works on a fresh clone with no database.
+# Unpacked source archives - regenerate with `npm run media`.
+.raw-assets/
+scripts/tmp/

@@ -1,0 +1,402 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Theme switching is manual (a data attribute on <html>) rather than purely
+   media-query driven, so the toggle in the header can override the OS.
+   --------------------------------------------------------------------------- */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------------------------------------------------------------------------
+   Palette — "Paper": aged parchment, oxblood, walnut, ink.
+   --------------------------------------------------------------------------- */
+:root {
+  --c-paper: #efe4ce;
+  --c-surface: #f8f1e2;
+  --c-sunken: #e4d5b9;
+  --c-ink: #241a12;
+  --c-ink-2: #55402e;
+  --c-ink-3: #756047;
+  --c-rule: #cbb28c;
+  --c-rule-soft: #ddcbab;
+  --c-oxblood: #7a1e2b;
+  --c-oxblood-2: #9c3040;
+  --c-navy: #17293f;
+  --c-brown: #6b4a2f;
+  --c-brass: #9d7a33;
+  --c-shadow: 36 26 18;
+
+  --f-display: var(--font-playfair, "Playfair Display"), Georgia, "Times New Roman", serif;
+  --f-body: var(--font-lora, Lora), Georgia, "Times New Roman", serif;
+  --f-mono: var(--font-mono-face, "JetBrains Mono"), ui-monospace, "SFMono-Regular", monospace;
+
+  color-scheme: light;
+}
+
+/* "Midnight": deep navy ground, beige ink, brightened oxblood for contrast. */
+[data-theme="dark"] {
+  --c-paper: #0c1622;
+  --c-surface: #132234;
+  --c-sunken: #091220;
+  --c-ink: #ede0c6;
+  --c-ink-2: #bfad8d;
+  --c-ink-3: #9a8869;
+  --c-rule: #2b3f58;
+  --c-rule-soft: #1d2d42;
+  --c-oxblood: #d4675a;
+  --c-oxblood-2: #e3897b;
+  --c-navy: #0a1421;
+  --c-brown: #b48a5d;
+  --c-brass: #d3ae67;
+  --c-shadow: 0 0 0;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-surface: var(--c-surface);
+  --color-sunken: var(--c-sunken);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-rule: var(--c-rule);
+  --color-rule-soft: var(--c-rule-soft);
+  --color-oxblood: var(--c-oxblood);
+  --color-oxblood-2: var(--c-oxblood-2);
+  --color-navy: var(--c-navy);
+  --color-brown: var(--c-brown);
+  --color-brass: var(--c-brass);
+
+  --font-display: var(--f-display);
+  --font-body: var(--f-body);
+  --font-mono: var(--f-mono);
+}
+
+/* --------------------------------------------------------------------------- */
+
+* {
+  border-color: var(--c-rule-soft);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--f-body);
+  font-feature-settings: "kern", "liga", "onum";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--c-oxblood);
+  color: var(--c-surface);
+}
+
+/* A very fine paper grain. Sits above the background, below all content. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+[data-theme="dark"] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.07;
+}
+
+/* ---------------------------------------------------------------------------
+   Typography
+   --------------------------------------------------------------------------- */
+.font-display {
+  font-family: var(--f-display);
+}
+
+.display-xl {
+  font-family: var(--f-display);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.022em;
+  font-size: clamp(2.6rem, 7.5vw, 5.6rem);
+}
+
+.display-lg {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.018em;
+  font-size: clamp(2rem, 4.6vw, 3.25rem);
+}
+
+.display-md {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.014em;
+  font-size: clamp(1.45rem, 2.7vw, 2rem);
+}
+
+/* Small-caps label used for section eyebrows and metadata. */
+.label {
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-ink-3);
+}
+
+.prose-vintage p {
+  line-height: 1.78;
+  color: var(--c-ink-2);
+}
+
+.prose-vintage p + p {
+  margin-top: 1.1em;
+}
+
+/* Drop cap on the opening paragraph of a long-form block. */
+.drop-cap > p:first-of-type::first-letter {
+  font-family: var(--f-display);
+  font-weight: 700;
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.78;
+  padding-right: 0.09em;
+  margin-top: 0.06em;
+  color: var(--c-oxblood);
+}
+
+/* ---------------------------------------------------------------------------
+   Rules and ornaments
+   --------------------------------------------------------------------------- */
+.rule-double {
+  border-top: 1px solid var(--c-rule);
+  border-bottom: 1px solid var(--c-rule);
+  height: 4px;
+}
+
+.rule-hair {
+  height: 1px;
+  background: var(--c-rule);
+  opacity: 0.6;
+}
+
+/* Letterpress plate: a panel with a hairline keyline and a soft inner glow. */
+.plate {
+  background: var(--c-surface);
+  border: 1px solid var(--c-rule);
+  box-shadow:
+    0 1px 0 0 rgb(var(--c-shadow) / 0.04),
+    0 10px 30px -18px rgb(var(--c-shadow) / 0.35);
+}
+
+.plate-inset {
+  background: var(--c-sunken);
+  border: 1px solid var(--c-rule-soft);
+}
+
+/* The thin double keyline that frames feature cards. */
+.frame-keyline {
+  position: relative;
+}
+
+.frame-keyline::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--c-rule);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Components
+   --------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.6rem;
+  border: 1px solid currentColor;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.btn-primary {
+  background: var(--c-oxblood);
+  border-color: var(--c-oxblood);
+  color: #f8f1e2;
+}
+
+.btn-primary:hover {
+  background: var(--c-oxblood-2);
+  border-color: var(--c-oxblood-2);
+}
+
+[data-theme="dark"] .btn-primary {
+  color: #0c1622;
+}
+
+.btn-ghost {
+  color: var(--c-ink);
+  border-color: var(--c-rule);
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--c-ink);
+  color: var(--c-paper);
+  border-color: var(--c-ink);
+}
+
+/* Small pill used for packages and tech tags. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--c-rule);
+  background: var(--c-surface);
+  color: var(--c-ink-2);
+}
+
+/* Phone bezel for screenshots. */
+.phone {
+  border-radius: 1.6rem;
+  border: 1px solid var(--c-rule);
+  background: var(--c-surface);
+  padding: 0.34rem;
+  box-shadow: 0 18px 44px -26px rgb(var(--c-shadow) / 0.55);
+  overflow: hidden;
+}
+
+.phone img {
+  border-radius: 1.3rem;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Underline that draws in on hover, for text links. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 260ms ease;
+}
+
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — all of it opt-out via prefers-reduced-motion at the bottom.
+   --------------------------------------------------------------------------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.scroll-fade {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-fade.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Thin scrollbars that match the paper. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-rule) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--c-rule);
+  border: 2px solid var(--c-paper);
+  border-radius: 99px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-oxblood);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .scroll-fade {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Print: the CV page should print as a clean document. */
+@media print {
+  body::before,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
