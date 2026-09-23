@@ -107,6 +107,7 @@ export async function saveProject(_previous: ActionState, formData: FormData): P
     paper_url: String(formData.get("paper_url") ?? "").trim() || null,
     cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     video_url: String(formData.get("video_url") ?? "").trim() || null,
+    poster_url: String(formData.get("poster_url") ?? "").trim() || null,
     architecture,
   };
 

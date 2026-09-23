@@ -28,6 +28,7 @@ export interface EditorProject {
   paperUrl: string;
   coverUrl: string;
   videoUrl: string;
+  posterUrl: string;
   architectureName: string;
   architectureSummary: string;
   architectureTree: string;
@@ -43,6 +44,9 @@ export function ProjectEditor({ project }: { project: EditorProject }) {
   const [state, action] = useActionState(saveProject, initial);
   const [media, setMedia] = useState(project.media);
   const [slug, setSlug] = useState(project.slug);
+  const [coverUrl, setCoverUrl] = useState(project.coverUrl);
+  const [videoUrl, setVideoUrl] = useState(project.videoUrl);
+  const [posterUrl, setPosterUrl] = useState(project.posterUrl);
 
   function appendUploads(paths: string[]) {
     const lines = paths.map((path) => `${path} :: `);
@@ -136,15 +140,47 @@ export function ProjectEditor({ project }: { project: EditorProject }) {
 
       {/* ------------------------------------------------------------- Media */}
       <Fieldset legend="Media">
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Text
-            label="Cover image"
-            name="cover_url"
-            defaultValue={project.coverUrl}
-            hint="A /media/… path or a storage key."
-          />
-          <Text label="Demo video" name="video_url" defaultValue={project.videoUrl} />
-        </div>
+        <Text
+          label="Cover image"
+          name="cover_url"
+          value={coverUrl}
+          onChange={setCoverUrl}
+          hint="Shown on the project card. Upload below, or paste a /media/… path."
+        />
+        <MediaUploader
+          folder={slug || "unsorted"}
+          accept="image/*"
+          label="Upload a cover image"
+          onUploaded={(paths) => paths[0] && setCoverUrl(paths[0])}
+        />
+
+        <Text
+          label="Demo video"
+          name="video_url"
+          value={videoUrl}
+          onChange={setVideoUrl}
+          hint="An MP4 walkthrough. Leave blank to hide the Demo section entirely."
+        />
+        <MediaUploader
+          folder={`${slug || "unsorted"}/video`}
+          accept="video/mp4"
+          label="Upload an MP4 (50MB max)"
+          onUploaded={(paths) => paths[0] && setVideoUrl(paths[0])}
+        />
+
+        <Text
+          label="Video poster"
+          name="poster_url"
+          value={posterUrl}
+          onChange={setPosterUrl}
+          hint="The still shown before the video plays. A frame from the video works best."
+        />
+        <MediaUploader
+          folder={`${slug || "unsorted"}/poster`}
+          accept="image/*"
+          label="Upload a poster frame"
+          onUploaded={(paths) => paths[0] && setPosterUrl(paths[0])}
+        />
 
         <Area
           label="Gallery"
@@ -154,7 +190,12 @@ export function ProjectEditor({ project }: { project: EditorProject }) {
           rows={10}
           hint="One per line: url :: caption"
         />
-        <MediaUploader folder={slug || "unsorted"} onUploaded={appendUploads} />
+        <MediaUploader
+          folder={slug || "unsorted"}
+          accept="image/*"
+          label="Add screenshots to the gallery"
+          onUploaded={appendUploads}
+        />
       </Fieldset>
 
       {/* ------------------------------------------------------ Architecture */}

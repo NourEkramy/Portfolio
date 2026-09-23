@@ -12,9 +12,14 @@ import { MEDIA_BUCKET } from "@/lib/supabase/config";
 export function MediaUploader({
   folder,
   onUploaded,
+  accept = "image/*,video/mp4,application/pdf",
+  label,
 }: {
   folder: string;
   onUploaded: (paths: string[]) => void;
+  /** Narrow the file picker to what this field actually accepts. */
+  accept?: string;
+  label?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -63,12 +68,13 @@ export function MediaUploader({
 
   return (
     <div className="mt-3 border border-dashed border-rule p-4">
+      {label && <p className="mb-2 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-ink-3">{label}</p>}
       <div className="flex flex-wrap items-center gap-3">
         <input
           ref={inputRef}
           type="file"
           multiple
-          accept="image/*,video/mp4,application/pdf"
+          accept={accept}
           disabled={busy}
           onChange={(event) => upload(event.target.files)}
           className="max-w-full font-mono text-[0.7rem] text-ink-2 file:mr-3 file:border file:border-rule file:bg-surface file:px-3 file:py-1.5 file:font-mono file:text-[0.68rem] file:uppercase file:tracking-[0.14em] file:text-ink-2"
