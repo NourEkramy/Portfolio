@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     "Flutter applications built with Clean Architecture, MVVM and Cubit — with the packages, structure and engineering decisions behind each one.",
 };
 
+/**
+ * The intro reads as a sentence, so the count is spelled out. Keeping it
+ * derived from the data means adding a project cannot leave the prose lying.
+ */
+function spelled(n: number) {
+  return (
+    ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ??
+    String(n)
+  );
+}
+
 export default async function ProjectsPage() {
   const projects = await getProjects();
 
@@ -28,9 +39,10 @@ export default async function ProjectsPage() {
             <h1 className="display-xl mt-6 max-w-3xl text-ink">Projects</h1>
             <div className="rule-double my-8 max-w-md" />
             <p className="max-w-2xl text-lg leading-relaxed text-ink-2">
-              Five Flutter applications, from a graduation project that became a published paper to
-              a food-delivery client with 160 tests. Each one lists the packages it actually
-              depends on, the folder structure it actually uses, and the decisions worth defending.
+              {spelled(projects.length)} Flutter applications, from a graduation project that became
+              a published paper to a food-delivery client with 160 tests. Each one lists the
+              packages it actually depends on, the folder structure it actually uses, and the
+              decisions worth defending.
             </p>
 
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
