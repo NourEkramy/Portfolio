@@ -13,7 +13,10 @@ export default async function HomePage() {
     getSkillGroups(),
   ]);
 
-  const featured = projects.filter((project) => project.featured).slice(0, 3);
+  // No cap: what appears here is whatever is ticked as featured in the
+  // dashboard. A fixed slice silently dropped the fourth one, which is a
+  // confusing way for a CMS-backed page to behave.
+  const featured = projects.filter((project) => project.featured);
   const current = experience.find((item) => item.current);
   const mobileSkills = skills.find((group) => group.name === "Mobile Development");
 
@@ -111,9 +114,19 @@ export default async function HomePage() {
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/*
+          Flex rather than grid so a trailing row that does not fill centres
+          itself. With a grid, a fourth featured project sat alone against the
+          left edge with two empty cells beside it, which reads as broken
+          rather than as a deliberate fourth.
+        */}
+        <div className="mt-12 flex flex-wrap justify-center gap-6">
           {featured.map((project, index) => (
-            <Reveal key={project.slug} delay={index * 110}>
+            <Reveal
+              key={project.slug}
+              delay={index * 110}
+              className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+            >
               <ProjectCard project={project} priority={index === 0} />
             </Reveal>
           ))}

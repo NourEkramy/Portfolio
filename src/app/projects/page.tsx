@@ -62,9 +62,14 @@ export default async function ProjectsPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Flex so a trailing row that does not fill centres itself. */}
+        <div className="flex flex-wrap justify-center gap-6">
           {projects.map((project, index) => (
-            <Reveal key={project.slug} delay={(index % 3) * 100}>
+            <Reveal
+              key={project.slug}
+              delay={(index % 3) * 100}
+              className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+            >
               <ProjectCard project={project} priority={index === 0} />
             </Reveal>
           ))}
